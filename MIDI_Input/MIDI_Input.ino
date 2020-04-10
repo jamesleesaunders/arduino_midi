@@ -2,6 +2,7 @@
 
 #define LED 13    // Arduino Board LED is on Pin 13
 
+
 //Create an instance of the library with default name, serial port and settings
 MIDI_CREATE_DEFAULT_INSTANCE();
 
@@ -25,7 +26,8 @@ void loop() { // Main loop
 // when a MIDI NOTE ON message is received.
 // It will be passed bytes for Channel, Pitch, and Velocity
 void MyHandleNoteOn(byte channel, byte pitch, byte velocity) { 
-  digitalWrite(LED,HIGH);  //Turn LED on
+  digitalWrite(LED, HIGH);  //Turn LED on
+
 }
 
 // MyHandleNoteOFF is the function that will be called by the Midi Library
@@ -34,4 +36,5 @@ void MyHandleNoteOn(byte channel, byte pitch, byte velocity) {
 // It will be passed bytes for Channel, Pitch, and Velocity
 void MyHandleNoteOff(byte channel, byte pitch, byte velocity) { 
   digitalWrite(LED,LOW);  //Turn LED off
+
 }
