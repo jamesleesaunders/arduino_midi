@@ -1,2 +1,3 @@
-# arduino_midi
-Arduino MIDI Interface Example Sketches
+# Arduino MIDI Interface Example Sketches
+
+Example Arduino sketches for use with the Data Point MIDI Interface serial board.
