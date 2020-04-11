@@ -1,11 +1,10 @@
 /*************************************************
- * MIDI In LED Example
- *
- * Author: James Saunders
- *************************************************/
+  MIDI In LED Example
+
+  Author: James Saunders
+*************************************************/
 
 #include <MIDI.h>
-
 
 #define LED 13
 
@@ -13,7 +12,7 @@
 MIDI_CREATE_DEFAULT_INSTANCE();
 
 void setup() {
-	// Set Arduino board pin 13 to output
+  // Set Arduino board pin 13 to output
   pinMode (LED, OUTPUT);
 
   // Initialize the MIDI Library.
@@ -31,7 +30,7 @@ void setup() {
 }
 
 void loop() {
-	// Continuously check if MIDI data has been received.
+  // Continuously check if MIDI data has been received.
   MIDI.read();
 }
 
@@ -39,8 +38,7 @@ void loop() {
 // when a MIDI NOTE ON message is received.
 // It will be passed bytes for Channel, Note, and Velocity
 void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
-
-	// Turn LED on
+  // Turn LED on
   digitalWrite(LED, HIGH);
 }
 
@@ -49,6 +47,6 @@ void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
 // * A NOTE ON message with Velocity = 0 will be treated as a NOTE OFF message *
 // It will be passed bytes for Channel, Note, and Velocity
 void MyHandleNoteOff(byte channel, byte midiNote, byte velocity) {
-	// Turn LED off
+  // Turn LED off
   digitalWrite(LED, LOW);
 }
