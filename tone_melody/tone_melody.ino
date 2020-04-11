@@ -1,9 +1,10 @@
 /*************************************************
- * MIDI Pitches Example
- *
- *************************************************/
+  Tone Melody Example
 
-# include "midiNote2Frequency.h"
+  Author: James Saunders
+*************************************************/
+
+#include "midiNote2Frequency.h"
 
 #define BUZZER_PIN 9
 
@@ -14,8 +15,6 @@ int melody[] = {NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0, NOTE_B3, NOTE_C4
 int noteDurations[] = {4, 8, 8, 4, 4, 4, 4, 4};
 
 void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
-  
   // Iterate over the notes of the melody
   for (int thisNote = 0; thisNote < 8; thisNote++) {
 
@@ -23,9 +22,7 @@ void setup() {
     // e.g quarter note = 1000 / 4, eighth note = 1000/8 etc.
     int noteDuration = 1000 / noteDurations[thisNote];
 
-    digitalWrite(LED_BUILTIN, HIGH);
     tone(BUZZER_PIN, melody[thisNote], noteDuration);
-    digitalWrite(LED_BUILTIN, LOW);
 
     // To distinguish the notes, set a minimum time between them.
     // The note's duration + 30% seems to work well.
