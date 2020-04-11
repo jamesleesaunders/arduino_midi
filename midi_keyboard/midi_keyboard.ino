@@ -2,7 +2,7 @@
 # include "midiNote2Frequency.h"
 
 #define NUM_BUTTONS 7
-#define LED_PIN 13    // Arduino Board LED is on Pin 13
+#define LED_PIN 13
 #define BUZZER_PIN 9
 
 const uint8_t button1 = 2;
@@ -17,11 +17,14 @@ const int intensityPot = 0;  // A0 input
 const uint8_t buttons[NUM_BUTTONS] = {button1, button2, button3, button4, button5, button6, button7};
 const uint8_t midiNotes[NUM_BUTTONS] = {57, 59, 60, 62, 64, 65, 67};
 
+uint8_t intensity;
+
 void setup() {
   Serial.begin(9600);
   pinMode(LED_BUILTIN, OUTPUT);
-  for (int i = 0; i < NUM_BUTTONS; i++)
+  for (int i = 0; i < NUM_BUTTONS; i++) {
     pinMode(buttons[i], INPUT_PULLUP);
+  }
 }
 
 void loop() {
@@ -40,12 +43,8 @@ void readButtons() {
 }
 
 void readIntensity() {
-  int val = analogRead(intensityPot);
-  if (val > 500) {
-    Serial.print("Pitch: ");
-    Serial.print(val);
-    Serial.println();
-  }
+  int intensity = analogRead(intensityPot);
+  setIntensity(intensity);
 }
 
 void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
@@ -59,4 +58,14 @@ void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
 
 void MyHandleNoteOff(byte channel, byte miniNote, byte velocity) {
   noTone(BUZZER_PIN);
+}
+
+void setIntensity(byte val) {
+  if (val < 100) {
+    val = 100;
+  }
+  intensity = (uint8_t) (map(val, 100, 255, 0, 127));
+  Serial.print("Intensity: ");
+  Serial.print(intensity);
+  Serial.println();
 }
