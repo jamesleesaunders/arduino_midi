@@ -1,8 +1,8 @@
 /*************************************************
-  Tone Melody Example
-
-  Author: James Saunders
-*************************************************/
+ * Tone Melody Example
+ *
+ * Author: James Saunders
+ *************************************************/
 
 #include "midiNote2Frequency.h"
 

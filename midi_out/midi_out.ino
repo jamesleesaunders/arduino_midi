@@ -1,8 +1,8 @@
 /*************************************************
-  MIDI Out Example
-
-  Author: James Saunders
-*************************************************/
+ * MIDI Out Example
+ *
+ * Author: James Saunders
+ *************************************************/
 
 #include <MIDI.h>
 #include "midiNote2Frequency.h"

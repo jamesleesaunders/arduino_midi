@@ -1,8 +1,8 @@
 /*************************************************
-  MIDI In Tone Example
-
-  Author: James Saunders
-*************************************************/
+ * MIDI In Tone Example
+ *
+ * Author: James Saunders
+ *************************************************/
 
 #include <MIDI.h>
 #include "midiNote2Frequency.h"

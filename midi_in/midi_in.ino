@@ -1,8 +1,8 @@
 /*************************************************
-  MIDI In LED Example
-
-  Author: James Saunders
-*************************************************/
+ * MIDI In LED Example
+ *
+ * Author: James Saunders
+ *************************************************/
 
 #include <MIDI.h>
 

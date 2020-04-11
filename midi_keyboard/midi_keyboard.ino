@@ -1,8 +1,8 @@
 /*************************************************
-  MIDI Keyboard Example
-
-  Author: James Saunders
-*************************************************/
+ * MIDI Keyboard Example
+ *
+ * Author: James Saunders
+ *************************************************/
 
 #include <MIDI.h>
 #include "midiNote2Frequency.h"
