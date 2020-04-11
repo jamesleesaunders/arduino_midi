@@ -1,30 +1,54 @@
-# include <MIDI.h>  // Add Midi Library
-# include "midiNote2Frequency.h"
+/*************************************************
+ * MIDI In Tone Example
+ *
+ * Author: James Saunders
+ *************************************************/
 
-#define LED_PIN 13    // Arduino Board LED is on Pin 13
+#include <MIDI.h>
+#include "midiNote2Frequency.h"
+
 #define TONE_PIN 8
 
-//Create an instance of the library with default name, serial port and settings
+// Create an instance of the library with default name, serial port and settings.
 MIDI_CREATE_DEFAULT_INSTANCE();
 
 void setup() {
-  pinMode (LED_PIN, OUTPUT); // Set Arduino board pin 13 to output
+
+
+
+	// Initialize the MIDI Library.
+  // OMNI sets it to listen to all channels..
+  // MIDI.begin(2) would set it to respond to notes on channel 2 only.
   MIDI.begin(MIDI_CHANNEL_OMNI);
-  MIDI.setHandleNoteOn(MyHandleNoteOn); // This is important!! This command
-  MIDI.setHandleNoteOff(MyHandleNoteOff); // This command tells the Midi Library 
+
+	// This is important!! This command tells the MIDI Library which function you want to call when a NOTE ON command
+	// is received. In this case it's "MyHandleNoteOn".
+  MIDI.setHandleNoteOn(MyHandleNoteOn);
+
+  // This command tells the MIDI Library
+  // to call "MyHandleNoteOff" when a NOTE OFF command is received.
+  MIDI.setHandleNoteOff(MyHandleNoteOff);
 }
 
-void loop() { // Main loop
-  MIDI.read(); // Continuously check if Midi data has been received.
+void loop() {
+	// Continuously check if MIDI data has been received.
+  MIDI.read();
 }
 
-void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) { 
-  digitalWrite(LED_PIN, HIGH);  // Turn LED on
+// MyHandleNoteON is the function that will be called by the MIDI Library
+// when a MIDI NOTE ON message is received.
+// It will be passed bytes for Channel, Note, and Velocity
+void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
   int frequency = FreqFromMidiNote(midiNote);
+  // Play Tone
   tone(8, frequency, 2000);
 }
 
-void MyHandleNoteOff(byte channel, byte miniNote, byte velocity) { 
-  digitalWrite(LED_PIN, LOW);  // Turn LED off
+// MyHandleNoteOFF is the function that will be called by the MIDI Library
+// when a MIDI NOTE OFF message is received.
+// * A NOTE ON message with Velocity = 0 will be treated as a NOTE OFF message *
+// It will be passed bytes for Channel, Note, and Velocity
+void MyHandleNoteOff(byte channel, byte midiNote, byte velocity) {
+	// Stop Playing Tone
   noTone(8);
 }

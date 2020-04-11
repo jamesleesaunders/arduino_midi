@@ -1,5 +1,11 @@
-# include <MIDI.h>
-# include "midiNote2Frequency.h"
+/*************************************************
+ * MIDI Keyboard Example
+ *
+ * Author: James Saunders
+ *************************************************/
+
+#include <MIDI.h>
+#include "midiNote2Frequency.h"
 
 #define NUM_BUTTONS 7
 #define LED_PIN 13

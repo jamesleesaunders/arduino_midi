@@ -1,4 +1,9 @@
-#include "pitches.h"
+/*************************************************
+ * MIDI Pitches Example
+ *
+ *************************************************/
+
+# include "midiNote2Frequency.h"
 
 #define BUZZER_PIN 9
 
