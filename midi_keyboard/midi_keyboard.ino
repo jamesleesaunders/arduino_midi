@@ -23,9 +23,12 @@ const int pitchPot = 0;  // A0 input
 const uint8_t buttons[NUM_BUTTONS] = {button1, button2, button3, button4, button5, button6, button7};
 const uint8_t midiNotes[NUM_BUTTONS] = {57, 59, 60, 62, 64, 65, 67};
 
-float potValue;
 int midiPitchShift;
 int midiNotePlaying;
+
+const int numReadings = 10;
+int readings[numReadings];      // the readings from the analog input
+int readIndex = 0;              // the index of the current reading
 
 void setup() {
   Serial.begin(9600);
@@ -33,15 +36,16 @@ void setup() {
   for (int i = 0; i < NUM_BUTTONS; i++) {
     pinMode(buttons[i], INPUT_PULLUP);
   }
+
+  // Initialize all the readings to 0
+  for (int thisReading = 0; thisReading < numReadings; thisReading++) {
+    readings[thisReading] = 0;
+  }
 }
 
 void loop() {
   readKeys();
   readPitch();
-}
-
-float mapfloat(float x, float in_min, float in_max, float out_min, float out_max) {
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 void readKeys() {
@@ -60,14 +64,14 @@ void readKeys() {
 
 void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
   digitalWrite(LED_PIN, HIGH);
-  
+
   // Lookup pitch from MIDI Note
   int pitch = FreqFromMidiNote(midiNote);
 
   // Difference between notes is ~6%
-  float pitchShift = mapfloat(midiPitchShift, 0, 127, 0.06, 1.06);
+  float pitchShift = mapfloat(midiPitchShift, 0, 127, 0.94, 1.06);
   pitch = pitch * pitchShift;
-    
+
   Serial.print("Note: ");
   Serial.println(midiNote);
   Serial.print("Pitch Shift: ");
@@ -84,15 +88,37 @@ void MyHandleNoteOff(byte channel, byte midiNote, byte velocity) {
 }
 
 void readPitch() {
-  int val = analogRead(pitchPot);
+  int reading = analogRead(pitchPot);
 
-  // Smooth potentiometer value
-  potValue = 0.9 * val + 0.1 * analogRead(0);
-  
-  if (potValue < 100) {
-    potValue = 100;
+  // Smooth readings by averaging out values.
+  readings[readIndex] = reading;
+  // Advance to the next position in the array.
+  readIndex = readIndex + 1;
+
+  int average = arrayAverage(readings, numReadings);
+  if (average < 300) {
+    average = 300;
   }
-  
+
+  // If we're at the end of the array wrap around to the beginning.
+  if (readIndex >= numReadings) {
+    readIndex = 0;
+  }
+
+  Serial.print("Reading: ");
+  Serial.println(average);
+
   // Convert to MIDI pitch shich value
-  midiPitchShift = (uint8_t) (map(potValue, 100, 255, 0, 127));
+  midiPitchShift = (uint8_t) (map(average, 300, 1022, 0, 127));
+}
+
+float arrayAverage(int * array, int len) {
+  long sum = 0L ;  // sum will be larger than an item, long for safety.
+  for (int i = 0 ; i < len ; i++)
+    sum += array [i] ;
+  return  ((float) sum) / len ;  // average will be fractional, so float may be appropriate.
+}
+
+float mapfloat(float x, float in_min, float in_max, float out_min, float out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
