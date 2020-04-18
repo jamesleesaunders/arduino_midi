@@ -23,7 +23,9 @@ const int pitchPot = 0;  // A0 input
 const uint8_t buttons[NUM_BUTTONS] = {button1, button2, button3, button4, button5, button6, button7};
 const uint8_t midiNotes[NUM_BUTTONS] = {57, 59, 60, 62, 64, 65, 67};
 
-int midiPitch;
+float potValue;
+int midiPitchShift;
+int midiNotePlaying;
 
 void setup() {
   Serial.begin(9600);
@@ -46,43 +48,51 @@ void readKeys() {
   for (int i = 0; i < NUM_BUTTONS; i++) {
     int midiNote = midiNotes[i];
     if (digitalRead(buttons[i]) == LOW) {
-      digitalWrite(LED_PIN, LOW);
+      digitalWrite(LED_PIN, HIGH);
+      if (midiNote != midiNotePlaying) {
+        MyHandleNoteOff(0, midiNotePlaying, 0);
+        midiNotePlaying = midiNote;
+      }
       MyHandleNoteOn(0, midiNote, 0);
     }
   }
 }
 
-void readPitch() {
-  int pitch = analogRead(pitchPot);
-  setPitch(pitch);
-}
-
 void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
-  // Lookup frequency for MIDI Note
-  int frequency = FreqFromMidiNote(midiNote);
+  digitalWrite(LED_PIN, HIGH);
+  
+  // Lookup pitch from MIDI Note
+  int pitch = FreqFromMidiNote(midiNote);
 
   // Difference between notes is ~6%
-  float pitchShift = mapfloat(midiPitch, 0, 127, 0.06, 1.06);
-  frequency = frequency * pitchShift;
+  float pitchShift = mapfloat(midiPitchShift, 0, 127, 0.06, 1.06);
+  pitch = pitch * pitchShift;
     
   Serial.print("Note: ");
   Serial.println(midiNote);
   Serial.print("Pitch Shift: ");
   Serial.println(pitchShift);
-  Serial.print("Frequency: ");
-  Serial.println(frequency);
+  Serial.print("Pitch: ");
+  Serial.println(pitch);
 
-  digitalWrite(LED_PIN, HIGH);
-  tone(PIEZO_PIN, frequency, 100);
+  tone(PIEZO_PIN, pitch, 100);
 }
 
 void MyHandleNoteOff(byte channel, byte midiNote, byte velocity) {
+  digitalWrite(LED_PIN, LOW);
   noTone(PIEZO_PIN);
 }
 
-void setPitch(byte val) {
-  if (val < 100) {
-    val = 100;
+void readPitch() {
+  int val = analogRead(pitchPot);
+
+  // Smooth potentiometer value
+  potValue = 0.9 * val + 0.1 * analogRead(0);
+  
+  if (potValue < 100) {
+    potValue = 100;
   }
-  midiPitch = (uint8_t) (map(val, 100, 255, 0, 127));
+  
+  // Convert to MIDI pitch shich value
+  midiPitchShift = (uint8_t) (map(potValue, 100, 255, 0, 127));
 }
