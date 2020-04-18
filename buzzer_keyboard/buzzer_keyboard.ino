@@ -1,10 +1,9 @@
 /*************************************************
- * MIDI Keyboard Example
+ * Buzzer Keyboard Example
  *
  * Author: James Saunders
  *************************************************/
 
-#include <MIDI.h>
 #include "midiNote2Frequency.h"
 
 #define NUM_BUTTONS 7

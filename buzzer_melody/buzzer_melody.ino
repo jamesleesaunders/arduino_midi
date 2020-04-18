@@ -1,10 +1,10 @@
 /*************************************************
- * Tone Melody Example
+ * Buzzer Melody Example
  *
  * Author: James Saunders
  *************************************************/
 
-#include "midiNote2Frequency.h"
+#include "pitches.h"
 
 #define BUZZER_PIN 9
 
