@@ -5,7 +5,8 @@
  *************************************************/
 
 #include <MIDI.h>
-#include "midiNote2Frequency.h"
+
+#define NOTE_C4  60
 
 // Created and binds the MIDI interface to the default hardware Serial port
 MIDI_CREATE_DEFAULT_INSTANCE();
