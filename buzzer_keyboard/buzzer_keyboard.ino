@@ -107,14 +107,15 @@ void readPitch() {
   Serial.print("Reading: ");
   Serial.println(average);
 
-  // Convert to MIDI pitch shich value
+  // Convert to MIDI pitch shift value
   midiPitchShift = (uint8_t) (map(average, 300, 1022, 0, 127));
 }
 
 float arrayAverage(int * array, int len) {
   long sum = 0L ;  // sum will be larger than an item, long for safety.
-  for (int i = 0 ; i < len ; i++)
-    sum += array [i] ;
+  for (int i = 0 ; i < len ; i++) {
+    sum += array [i];
+  }
   return  ((float) sum) / len ;  // average will be fractional, so float may be appropriate.
 }
 
