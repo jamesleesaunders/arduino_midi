@@ -69,6 +69,7 @@ void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
 }
 
 void MyHandleNoteOff(byte channel, byte midiNote, byte velocity) {
+  // Stop Playing Note
   noTone(PIEZO_PIN);
 }
 

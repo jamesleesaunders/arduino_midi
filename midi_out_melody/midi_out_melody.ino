@@ -1,11 +1,11 @@
 /*************************************************
- * MIDI Out Example
+ * MIDI Out Melody Example
  *
  * Author: James Saunders
  *************************************************/
 
-#include <MIDI.h>
 #include "midiNote2Frequency.h"
+#include <MIDI.h>
 
 const uint8_t midiChannel = 1;
 

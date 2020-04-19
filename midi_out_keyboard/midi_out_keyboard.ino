@@ -1,15 +1,13 @@
 /*************************************************
- * MIDI Keyboard Example
+ * MIDI Out Keyboard Example
  *
  * Author: James Saunders
  *************************************************/
 
-#include <MIDI.h>
 #include "midiNote2Frequency.h"
+#include <MIDI.h>
 
 #define NUM_BUTTONS 7
-
-const uint8_t midiChannel = 1;
 
 const uint8_t button1 = 2;
 const uint8_t button2 = 3;
@@ -22,6 +20,8 @@ const int pitchPot = 0;  // A0 input
 
 const uint8_t buttons[NUM_BUTTONS] = {button1, button2, button3, button4, button5, button6, button7};
 const uint8_t midiNotes[NUM_BUTTONS] = {MIDI_A3, MIDI_B3, MIDI_C4, MIDI_D4, MIDI_E4, MIDI_F4, MIDI_G4};
+
+const uint8_t midiChannel = 1;
 
 int currentPitch = 0;
 int currentNote = 0;

@@ -1,11 +1,11 @@
 /*************************************************
- * MIDI In Tone Example
+ * MIDI In Buzzer Example
  *
  * Author: James Saunders
  *************************************************/
 
-#include <MIDI.h>
 #include "midiNote2Frequency.h"
+#include <MIDI.h>
 
 #define BUZZER_PIN 9
 
@@ -32,20 +32,20 @@ void loop() {
   MIDI.read();
 }
 
-// MyHandleNoteON is the function that will be called by the MIDI Library
-// when a MIDI NOTE ON message is received.
+// MyHandleNoteOn is the function that will be called by the MIDI Library when a MIDI NOTE ON message is received.
 // It will be passed bytes for Channel, Note, and Velocity
 void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
-  int frequency = FreqFromMidiNote(midiNote);
-  // Play Tone
-  tone(BUZZER_PIN, frequency, 2000);
+  // Lookup pitch from MIDI Note
+  int pitch = FreqFromMidiNote(midiNote);
+  
+  // Play Note
+  tone(BUZZER_PIN, pitch, 500);
 }
 
-// MyHandleNoteOFF is the function that will be called by the MIDI Library
-// when a MIDI NOTE OFF message is received.
-// * A NOTE ON message with Velocity = 0 will be treated as a NOTE OFF message *
+// MyHandleNoteOff is the function that will be called by the MIDI Library when a MIDI NOTE OFF message is received.
+// A NOTE ON message with Velocity = 0 will be treated as a NOTE OFF message.
 // It will be passed bytes for Channel, Note, and Velocity
 void MyHandleNoteOff(byte channel, byte midiNote, byte velocity) {
-  // Stop Playing Tone
+  // Stop Playing Note
   noTone(BUZZER_PIN);
 }
