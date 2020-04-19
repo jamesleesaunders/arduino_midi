@@ -4,17 +4,20 @@
  * Author: James Saunders
  *************************************************/
 
-#include "pitches.h"
+#include "midiNote2Frequency.h"
 
 #define BUZZER_PIN 9
 
 // Notes in the melody
-int melody[] = {NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0, NOTE_B3, NOTE_C4};
+int melody[] = {FREQ_C4, FREQ_G3, FREQ_G3, FREQ_A3, FREQ_G3, 0, FREQ_B3, FREQ_C4};
 
 // Note durations (4 = quarter note, 8 = eighth note etc.)
 int noteDurations[] = {4, 8, 8, 4, 4, 4, 4, 4};
 
 void setup() {
+}
+
+void loop() {
   // Iterate over the notes of the melody
   for (int thisNote = 0; thisNote < 8; thisNote++) {
 
@@ -32,7 +35,6 @@ void setup() {
     // Stop the tone playing
     noTone(BUZZER_PIN);
   }
-}
 
-void loop() {
+  delay(2000);
 }

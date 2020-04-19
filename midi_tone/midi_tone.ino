@@ -7,7 +7,7 @@
 #include <MIDI.h>
 #include "midiNote2Frequency.h"
 
-#define TONE_PIN 8
+#define BUZZER_PIN 9
 
 // Create an instance of the library with default name, serial port and settings.
 MIDI_CREATE_DEFAULT_INSTANCE();
@@ -38,7 +38,7 @@ void loop() {
 void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
   int frequency = FreqFromMidiNote(midiNote);
   // Play Tone
-  tone(8, frequency, 2000);
+  tone(BUZZER_PIN, frequency, 2000);
 }
 
 // MyHandleNoteOFF is the function that will be called by the MIDI Library
@@ -47,5 +47,5 @@ void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
 // It will be passed bytes for Channel, Note, and Velocity
 void MyHandleNoteOff(byte channel, byte midiNote, byte velocity) {
   // Stop Playing Tone
-  noTone(8);
+  noTone(BUZZER_PIN);
 }

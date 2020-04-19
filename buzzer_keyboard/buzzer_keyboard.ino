@@ -20,7 +20,7 @@ const uint8_t button7 = 8;
 const int pitchPot = 0;  // A0 input
 
 const uint8_t buttons[NUM_BUTTONS] = {button1, button2, button3, button4, button5, button6, button7};
-const uint8_t midiNotes[NUM_BUTTONS] = {57, 59, 60, 62, 64, 65, 67};
+const uint8_t midiNotes[NUM_BUTTONS] = {MIDI_A3, MIDI_B3, MIDI_C4, MIDI_D4, MIDI_E4, MIDI_F4, MIDI_G4};
 
 int midiPitchShift;
 int midiNotePlaying;
