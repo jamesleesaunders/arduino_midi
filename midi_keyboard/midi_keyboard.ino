@@ -73,7 +73,11 @@ void readPitch() {
   if (reading < 300) {
     reading = 300;
   }
+
+  // Map pot readings to 10 bands
   int bandValue = map(reading, 300, 1023, 0, 10);
+
+  // Convert to MIDI frequency bend
   int pitchValue = map(bandValue, 0, 10, -8192, 8192);
 
   if (pitchValue != currentPitch) {

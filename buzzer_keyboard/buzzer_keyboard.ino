@@ -7,7 +7,6 @@
 #include "midiNote2Frequency.h"
 
 #define NUM_BUTTONS 7
-#define LED_PIN 13
 #define PIEZO_PIN 9
 
 const uint8_t button1 = 2;
@@ -22,21 +21,19 @@ const int pitchPot = 0;  // A0 input
 const uint8_t buttons[NUM_BUTTONS] = {button1, button2, button3, button4, button5, button6, button7};
 const uint8_t midiNotes[NUM_BUTTONS] = {MIDI_A3, MIDI_B3, MIDI_C4, MIDI_D4, MIDI_E4, MIDI_F4, MIDI_G4};
 
-int midiPitchShift;
-int midiNotePlaying;
+float currentPitch;
+int currentNote;
 
 const int numReadings = 10;
 int readings[numReadings];      // the readings from the analog input
 int readIndex = 0;              // the index of the current reading
 
 void setup() {
-  Serial.begin(9600);
-  pinMode(LED_BUILTIN, OUTPUT);
   for (int i = 0; i < NUM_BUTTONS; i++) {
     pinMode(buttons[i], INPUT_PULLUP);
   }
 
-  // Initialize all the readings to 0
+  // Initialize all the pitchshift readings to 0
   for (int thisReading = 0; thisReading < numReadings; thisReading++) {
     readings[thisReading] = 0;
   }
@@ -51,10 +48,9 @@ void readKeys() {
   for (int i = 0; i < NUM_BUTTONS; i++) {
     int midiNote = midiNotes[i];
     if (digitalRead(buttons[i]) == LOW) {
-      digitalWrite(LED_PIN, HIGH);
-      if (midiNote != midiNotePlaying) {
-        MyHandleNoteOff(0, midiNotePlaying, 0);
-        midiNotePlaying = midiNote;
+      if (midiNote != currentNote) {
+        MyHandleNoteOff(0, currentNote, 0);
+        currentNote = midiNote;
       }
       MyHandleNoteOn(0, midiNote, 0);
     }
@@ -62,27 +58,17 @@ void readKeys() {
 }
 
 void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
-  digitalWrite(LED_PIN, HIGH);
-
   // Lookup pitch from MIDI Note
   int pitch = FreqFromMidiNote(midiNote);
 
-  // Difference between notes is ~6%
-  float pitchShift = mapfloat(midiPitchShift, 0, 127, 0.94, 1.06);
-  pitch = pitch * pitchShift;
+  // Apply pitch variance
+  pitch = pitch * currentPitch;
 
-  Serial.print("Note: ");
-  Serial.println(midiNote);
-  Serial.print("Pitch Shift: ");
-  Serial.println(pitchShift);
-  Serial.print("Pitch: ");
-  Serial.println(pitch);
-
+  // Play Note
   tone(PIEZO_PIN, pitch, 100);
 }
 
 void MyHandleNoteOff(byte channel, byte midiNote, byte velocity) {
-  digitalWrite(LED_PIN, LOW);
   noTone(PIEZO_PIN);
 }
 
@@ -104,11 +90,8 @@ void readPitch() {
     readIndex = 0;
   }
 
-  Serial.print("Reading: ");
-  Serial.println(average);
-
-  // Convert to MIDI pitch shift value
-  midiPitchShift = (uint8_t) (map(average, 300, 1022, 0, 127));
+  // Convert to pitch shift variance
+  currentPitch = mapfloat(average, 300, 1023, 0.94, 1.06);
 }
 
 float arrayAverage(int * array, int len) {
