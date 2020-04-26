@@ -33,6 +33,7 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 void setup() {
   MIDI.begin(MIDI_CHANNEL_OMNI);
 
+  // Initialize buttons
   for (int i = 0; i < NUM_BUTTONS; i++) {
     pinMode(buttons[i], INPUT_PULLUP);
   }
@@ -70,15 +71,12 @@ void readKeys() {
 void readPitch() {
   int reading = analogRead(pitchPot);
 
-  if (reading < 300) {
-    reading = 300;
-  }
-
-  // Map pot readings to 10 bands
-  int bandValue = map(reading, 300, 1023, 0, 10);
+  // Map pot readings into 24 bands
+  // https://forum.arduino.cc/index.php?topic=266687.0
+  int bandValue = map(reading, 0, 1024, -12, 12);
 
   // Convert to MIDI frequency bend
-  int pitchValue = map(bandValue, 0, 10, -8192, 8192);
+  int pitchValue = map(bandValue, -12, 12, -8192, 8192);
 
   if (pitchValue != currentPitch) {
     MIDI.sendPitchBend(pitchValue, midiChannel);

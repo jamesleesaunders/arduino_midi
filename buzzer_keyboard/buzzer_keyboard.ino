@@ -21,7 +21,7 @@ const int pitchPot = 0;  // A0 input
 const uint8_t buttons[NUM_BUTTONS] = {button1, button2, button3, button4, button5, button6, button7};
 const uint8_t midiNotes[NUM_BUTTONS] = {MIDI_A3, MIDI_B3, MIDI_C4, MIDI_D4, MIDI_E4, MIDI_F4, MIDI_G4};
 
-float currentPitch;
+float pitchVariance;
 int currentNote;
 
 const int numReadings = 10;
@@ -29,6 +29,7 @@ int readings[numReadings];      // the readings from the analog input
 int readIndex = 0;              // the index of the current reading
 
 void setup() {
+  // Initialize buttons
   for (int i = 0; i < NUM_BUTTONS; i++) {
     pinMode(buttons[i], INPUT_PULLUP);
   }
@@ -59,10 +60,10 @@ void readKeys() {
 
 void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
   // Lookup pitch from MIDI Note
-  int pitch = FreqFromMidiNote(midiNote);
+  int frequency = FreqFromMidiNote(midiNote);
 
   // Apply pitch variance
-  pitch = pitch * currentPitch;
+  int pitch = frequency * pow(2, (pitchVariance / 12));
 
   // Play Note
   tone(PIEZO_PIN, pitch, 100);
@@ -76,23 +77,19 @@ void MyHandleNoteOff(byte channel, byte midiNote, byte velocity) {
 void readPitch() {
   int reading = analogRead(pitchPot);
 
-  // Smooth readings by averaging out values.
+  // Smooth readings by averaging values.
   readings[readIndex] = reading;
   // Advance to the next position in the array.
   readIndex = readIndex + 1;
 
   int average = arrayAverage(readings, numReadings);
-  if (average < 300) {
-    average = 300;
-  }
 
   // If we're at the end of the array wrap around to the beginning.
   if (readIndex >= numReadings) {
     readIndex = 0;
   }
 
-  // Convert to pitch shift variance
-  currentPitch = mapfloat(average, 300, 1023, 0.94, 1.06);
+  pitchVariance = mapfloat(average, 0, 1023, -2, 2);
 }
 
 float arrayAverage(int * array, int len) {

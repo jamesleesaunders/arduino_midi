@@ -20,11 +20,14 @@ void setup() {
 
   // This is important!! This command tells the MIDI Library which function you want to call when a NOTE ON command
   // is received. In this case it's "MyHandleNoteOn".
-  MIDI.setHandleNoteOn(MyHandleNoteOn);
+  MIDI.setHandleNoteOn(handleNoteOn);
 
   // This command tells the MIDI Library
   // to call "MyHandleNoteOff" when a NOTE OFF command is received.
-  MIDI.setHandleNoteOff(MyHandleNoteOff);
+  MIDI.setHandleNoteOff(handleNoteOff);
+
+  // TODO
+  MIDI.setHandleNoteOff(handlePitchBend);
 }
 
 void loop() {
@@ -34,7 +37,7 @@ void loop() {
 
 // MyHandleNoteOn is the function that will be called by the MIDI Library when a MIDI NOTE ON message is received.
 // It will be passed bytes for Channel, Note, and Velocity
-void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
+void handleNoteOn(byte channel, byte midiNote, byte velocity) {
   // Lookup pitch from MIDI Note
   int pitch = FreqFromMidiNote(midiNote);
   
@@ -45,7 +48,12 @@ void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
 // MyHandleNoteOff is the function that will be called by the MIDI Library when a MIDI NOTE OFF message is received.
 // A NOTE ON message with Velocity = 0 will be treated as a NOTE OFF message.
 // It will be passed bytes for Channel, Note, and Velocity
-void MyHandleNoteOff(byte channel, byte midiNote, byte velocity) {
+void handleNoteOff(byte channel, byte midiNote, byte velocity) {
   // Stop Playing Note
   noTone(BUZZER_PIN);
+}
+
+void handlePitchBend(byte channel, int bend) {
+  // TODO
+  // Handle Pitch Bend
 }
