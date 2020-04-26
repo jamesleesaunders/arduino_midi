@@ -24,17 +24,19 @@ const uint8_t midiNotes[NUM_BUTTONS] = {MIDI_A3, MIDI_B3, MIDI_C4, MIDI_D4, MIDI
 float pitchVariance;
 int currentNote;
 
+// The readings from the analog input.
 const int numReadings = 10;
-int readings[numReadings];      // the readings from the analog input
-int readIndex = 0;              // the index of the current reading
+int readings[numReadings];
+// The index of the current reading.
+int readIndex = 0;
 
 void setup() {
-  // Initialize buttons
+  // Initialize buttons.
   for (int i = 0; i < NUM_BUTTONS; i++) {
     pinMode(buttons[i], INPUT_PULLUP);
   }
 
-  // Initialize all the pitchshift readings to 0
+  // Initialize all the pitch shift readings to 0.
   for (int thisReading = 0; thisReading < numReadings; thisReading++) {
     readings[thisReading] = 0;
   }
@@ -50,28 +52,20 @@ void readKeys() {
     int midiNote = midiNotes[i];
     if (digitalRead(buttons[i]) == LOW) {
       if (midiNote != currentNote) {
-        MyHandleNoteOff(0, currentNote, 0);
+        noTone(PIEZO_PIN);
         currentNote = midiNote;
       }
-      MyHandleNoteOn(0, midiNote, 0);
+      
+      // Lookup frequency from MIDI Note.
+      int frequency = FreqFromMidiNote(midiNote);
+
+      // Apply pitch variance.
+      int pitch = frequency * pow(2, (pitchVariance / 12));
+
+      // Play Note.
+      tone(PIEZO_PIN, pitch, 100);
     }
   }
-}
-
-void MyHandleNoteOn(byte channel, byte midiNote, byte velocity) {
-  // Lookup pitch from MIDI Note
-  int frequency = FreqFromMidiNote(midiNote);
-
-  // Apply pitch variance
-  int pitch = frequency * pow(2, (pitchVariance / 12));
-
-  // Play Note
-  tone(PIEZO_PIN, pitch, 100);
-}
-
-void MyHandleNoteOff(byte channel, byte midiNote, byte velocity) {
-  // Stop Playing Note
-  noTone(PIEZO_PIN);
 }
 
 void readPitch() {
@@ -93,11 +87,11 @@ void readPitch() {
 }
 
 float arrayAverage(int * array, int len) {
-  long sum = 0L ;  // sum will be larger than an item, long for safety.
+  long sum = 0L ;  // Sum will be larger than an item, long for safety.
   for (int i = 0 ; i < len ; i++) {
     sum += array [i];
   }
-  return  ((float) sum) / len ;  // average will be fractional, so float may be appropriate.
+  return  ((float) sum) / len ;  // Average will be fractional, so float may be appropriate.
 }
 
 float mapfloat(float x, float in_min, float in_max, float out_min, float out_max) {

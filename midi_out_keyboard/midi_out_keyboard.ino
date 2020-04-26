@@ -27,13 +27,13 @@ int currentPitch = 0;
 int currentNote = 0;
 int cycleCount = 0;
 
-// Created and binds the MIDI interface to the default hardware Serial port
+// Created and binds the MIDI interface to the default hardware serial port.
 MIDI_CREATE_DEFAULT_INSTANCE();
 
 void setup() {
   MIDI.begin(MIDI_CHANNEL_OMNI);
 
-  // Initialize buttons
+  // Initialize buttons.
   for (int i = 0; i < NUM_BUTTONS; i++) {
     pinMode(buttons[i], INPUT_PULLUP);
   }
@@ -71,11 +71,11 @@ void readKeys() {
 void readPitch() {
   int reading = analogRead(pitchPot);
 
-  // Map pot readings into 24 bands
+  // Map pot readings into 24 bands.
   // https://forum.arduino.cc/index.php?topic=266687.0
   int bandValue = map(reading, 0, 1024, -12, 12);
 
-  // Convert to MIDI frequency bend
+  // Convert to MIDI frequency bend.
   int pitchValue = map(bandValue, -12, 12, -8192, 8192);
 
   if (pitchValue != currentPitch) {
