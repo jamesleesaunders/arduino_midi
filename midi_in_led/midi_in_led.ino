@@ -6,14 +6,14 @@
 
 #include <MIDI.h>
 
-#define LED 13
+#define LED_PIN 13
 
 // Created and binds the MIDI interface to the default hardware serial port.
 MIDI_CREATE_DEFAULT_INSTANCE();
 
 void setup() {
   // Set Arduino board pin 13 to output.
-  pinMode (LED, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
 
   // Initialize the MIDI Library.
   // OMNI sets it to listen to all channels. MIDI.begin(2) would set it to respond to notes on channel 2 only.
@@ -36,7 +36,7 @@ void loop() {
 // It will be passed bytes for Channel, Note, and Velocity.
 void handleNoteOn(byte channel, byte midiNote, byte velocity) {
   // Turn LED On.
-  digitalWrite(LED, HIGH);
+  digitalWrite(LED_PIN, HIGH);
 }
 
 // handleNoteOff() is the function that will be called by the MIDI Library when a MIDI NOTE OFF message is received.
@@ -44,5 +44,5 @@ void handleNoteOn(byte channel, byte midiNote, byte velocity) {
 // It will be passed bytes for Channel, Note, and Velocity.
 void handleNoteOff(byte channel, byte midiNote, byte velocity) {
   // Turn LED Off.
-  digitalWrite(LED, LOW);
+  digitalWrite(LED_PIN, LOW);
 }
