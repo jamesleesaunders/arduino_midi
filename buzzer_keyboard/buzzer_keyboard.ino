@@ -57,7 +57,7 @@ void readKeys() {
       }
       
       // Lookup frequency from MIDI Note.
-      int frequency = FreqFromMidiNote(midiNote);
+      int frequency = freqFromMidiNote(midiNote);
 
       // Apply pitch variance.
       int pitch = frequency * pow(2, (pitchVariance / 12));

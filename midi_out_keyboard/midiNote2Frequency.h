@@ -226,7 +226,9 @@ typedef struct {
   int frequency;
 } MidiNotes;
 
-MidiNotes noteLookup[107] = {
+#define NUM_NOTES 107
+
+MidiNotes noteLookup[NUM_NOTES] = {
     {MIDI_G9,  FREQ_G9},
     {MIDI_FS9, FREQ_FS9},
     {MIDI_F9,  FREQ_F9},
@@ -336,8 +338,8 @@ MidiNotes noteLookup[107] = {
     {MIDI_A0,  FREQ_A0}
 };
 
-int FreqFromMidiNote(int midiNote) {
-  for (int i = 0; i < sizeof(noteLookup); i++) {
+int freqFromMidiNote(int midiNote) {
+  for (int i = 0; i < NUM_NOTES; i++) {
     if (noteLookup[i].midiNote == midiNote) {
       return noteLookup[i].frequency;
     }

@@ -8,6 +8,8 @@
 #include <MIDI.h>
 
 #define NUM_BUTTONS 7
+#define NUM_NOTES 12
+
 #define BUZZER_PIN 9
 #define LED_PIN 13
 
@@ -21,7 +23,37 @@ const uint8_t button7 = 8;
 const int pitchPot = 0;  // A0 input
 
 const uint8_t buttons[NUM_BUTTONS] = {button1, button2, button3, button4, button5, button6, button7};
-const uint8_t midiNotes[NUM_BUTTONS] = {MIDI_A3, MIDI_B3, MIDI_C4, MIDI_D4, MIDI_E4, MIDI_F4, MIDI_G4};
+const uint8_t buttonIds[NUM_BUTTONS] = {1, 2, 4, 8, 16, 32, 64};
+
+typedef struct {
+  int buttonId;
+  int midiNote;
+} NoteLookup;
+
+NoteLookup midiNotes[NUM_NOTES] = {
+    {1, MIDI_C4},
+    {3, MIDI_CS4},
+    {2, MIDI_D4},
+    {6, MIDI_DS4},
+    {4, MIDI_E4},
+    {8, MIDI_F4},
+    {24, MIDI_FS4},
+    {16, MIDI_G4},
+    {48, MIDI_GS4},
+    {32, MIDI_A4},
+    {96, MIDI_AS4},
+    {64, MIDI_B4}
+};
+
+int midiNoteFromButtonId(int buttonId) {
+  for (int i = 0; i < 12; i++) {
+    if (midiNotes[i].buttonId == buttonId) {
+      return midiNotes[i].midiNote;
+    }
+  }
+
+  return 0;
+}
 
 const uint8_t midiChannel = 1;
 
@@ -33,7 +65,6 @@ int readIndex = 0;
 
 int currentPitch = 0;
 int currentNote = 0;
-int cycleCount = 0;
 float pitchVariance = 1.0;
 
 int notePlaying = 0;
@@ -67,7 +98,7 @@ void loop() {
 
 void handleNoteOn(byte channel, byte midiNote, byte velocity) {
   // Lookup pitch from MIDI Note
-  int frequency = FreqFromMidiNote(midiNote);
+  int frequency = freqFromMidiNote(midiNote);
 
   // Apply pitch variance
   int pitch = frequency * pitchVariance;
@@ -98,27 +129,29 @@ void handlePitchBend(byte channel, int bend) {
 }
 
 void readKeys() {
+  int buttonId = 0;
   for (int i = 0; i < NUM_BUTTONS; i++) {
-    int midiNote = midiNotes[i];
     if (digitalRead(buttons[i]) == LOW) {
-      if (midiNote != currentNote) {
-        MIDI.sendNoteOff(currentNote, 127, midiChannel);
-        MIDI.sendNoteOn(midiNote, 127, midiChannel);
-        currentNote = midiNote;
-      }
-      cycleCount = 0;
+      buttonId = buttonId + buttonIds[i];
     }
   }
+  
+  int midiNote = midiNoteFromButtonId(buttonId);
+  if (midiNote && midiNote != currentNote) {
+    // It's a new note...
+    MIDI.sendNoteOff(currentNote, 127, midiChannel);
+    MIDI.sendNoteOn(midiNote, 127, midiChannel);
+    currentNote = midiNote;
+  }
 
-  if (currentNote && cycleCount > 10) {
-    for (int i = 0; i < NUM_BUTTONS; i++) {
-      int midiNote = midiNotes[i];
+  if (!midiNote && currentNote) {
+    // Turn everything off...
+    for (int i = 0; i < NUM_NOTES; i++) {
+      int midiNote = midiNotes[i].midiNote;
       MIDI.sendNoteOff(midiNote, 127, midiChannel);
     }
     currentNote = 0;
-    cycleCount = 0;
   }
-  cycleCount++;
 }
 
 void readPitch() {

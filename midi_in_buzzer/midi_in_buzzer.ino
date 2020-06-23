@@ -37,7 +37,7 @@ void loop() {
 // It will be passed bytes for Channel, Note, and Velocity.
 void handleNoteOn(byte channel, byte midiNote, byte velocity) {
   // Lookup pitch from MIDI Note
-  int pitch = FreqFromMidiNote(midiNote);
+  int pitch = freqFromMidiNote(midiNote);
   
   // Play Note
   tone(BUZZER_PIN, pitch, 500);
