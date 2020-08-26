@@ -17,7 +17,10 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 #define LED_A 7
 #define LED_B 8
 
-#define NUM_NOTES 63
+typedef struct {
+  int midiNote;
+  int led;
+} MidiNotes;
 
 #define MIDI_G9  127
 #define MIDI_F9  125
@@ -83,10 +86,7 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 #define MIDI_B0  23
 #define MIDI_A0  21
 
-typedef struct {
-  int midiNote;
-  int frequency;
-} MidiNotes;
+#define NUM_NOTES 63
 
 MidiNotes noteLookup[NUM_NOTES] = {
     {MIDI_G9,  LED_G},
@@ -154,10 +154,10 @@ MidiNotes noteLookup[NUM_NOTES] = {
     {MIDI_A0,  LED_A}
 };
 
-int freqFromMidiNote(int midiNote) {
+int ledFromMidiNote(int midiNote) {
   for (int i = 0; i < NUM_NOTES; i++) {
     if (noteLookup[i].midiNote == midiNote) {
-      return noteLookup[i].frequency;
+      return noteLookup[i].led;
     }
   }
 
@@ -174,15 +174,10 @@ void setup() {
   pinMode(LED_F, OUTPUT);
   pinMode(LED_G, OUTPUT);
 
-  // Initialize the MIDI Library.
-  // OMNI sets it to listen to all channels. MIDI.begin(2) would set it to respond to notes on channel 2 only.
   MIDI.begin(MIDI_CHANNEL_OMNI);
 
-  // This is important!! This command tells the MIDI Library which function you want to call when a NOTE ON command
-  // is received. In this case it's "handleNoteOn".
   MIDI.setHandleNoteOn(handleNoteOn);
 
-  // This command tells the MIDI Library to call "handleNoteOff" when a NOTE OFF command is received.
   MIDI.setHandleNoteOff(handleNoteOff);
 }
 
@@ -190,19 +185,12 @@ void loop() {
   MIDI.read();
 }
 
-// handleNoteOn() is the function that will be called by the MIDI Library when a MIDI NOTE ON message is received.
-// It will be passed bytes for Channel, Note, and Velocity.
 void handleNoteOn(byte channel, byte midiNote, byte velocity) {
-  // Turn LED On.
-  int led = freqFromMidiNote(midiNote);
+  int led = ledFromMidiNote(midiNote);
   digitalWrite(led, HIGH);
 }
 
-// handleNoteOff() is the function that will be called by the MIDI Library when a MIDI NOTE OFF message is received.
-// A NOTE ON message with Velocity = 0 will be treated as a NOTE OFF message.
-// It will be passed bytes for Channel, Note, and Velocity.
 void handleNoteOff(byte channel, byte midiNote, byte velocity) {
-  // Turn LED Off.
-  int led = freqFromMidiNote(midiNote);
+  int led = ledFromMidiNote(midiNote);
   digitalWrite(led, LOW);
 }
