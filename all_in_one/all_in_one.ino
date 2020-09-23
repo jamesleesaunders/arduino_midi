@@ -75,6 +75,8 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 void setup() {
   MIDI.begin(MIDI_CHANNEL_OMNI);
 
+  MIDI.turnThruOff();
+
   // Handle incoming MIDI messages.
   MIDI.setHandleNoteOn(handleNoteOn);
   MIDI.setHandleNoteOff(handleNoteOff);
