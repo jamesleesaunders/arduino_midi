@@ -9,13 +9,13 @@
 // Created and binds the MIDI interface to the default hardware serial port.
 MIDI_CREATE_DEFAULT_INSTANCE();
 
-#define LED_C 2
-#define LED_D 3
-#define LED_E 4
-#define LED_F 5
-#define LED_G 6
-#define LED_A 7
-#define LED_B 8
+#define LED_C 6
+#define LED_D 7
+#define LED_E 8
+#define LED_F 10
+#define LED_G 11
+#define LED_A 12
+#define LED_B 13
 
 typedef struct {
   int midiNote;

@@ -18,7 +18,7 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 #define LED_A 5
 #define LED_B 6
 
-#define NEO_PIN 9
+#define NEO_PIN 6
 #define NUM_PIXELS 7
 
 Adafruit_NeoPixel pixels(NUM_PIXELS, NEO_PIN, NEO_RGB + NEO_KHZ800);
@@ -176,13 +176,14 @@ MidiNotes ledFromMidiNote(int midiNote) {
 void setup() {
   // Initialize NeoPixel Library.
   pixels.begin();
+  pixels.setBrightness(50);
   pixels.clear();
+  pixels.show();
 
   // Initialize the MIDI Library.
   MIDI.begin(MIDI_CHANNEL_OMNI);
 
   MIDI.setHandleNoteOn(handleNoteOn);
-
   MIDI.setHandleNoteOff(handleNoteOff);
 }
 
