@@ -25,3 +25,11 @@ Arduino keyboard plays though MIDI Out.
 ## MIDI Out Melody
 
 Happy Birthday played out of MIDI Out.
+
+## Christmas LED
+
+Christmas Tree LEDs.
+
+## Christmas RGB
+
+Christmas Tree NeoPixels.
