@@ -161,7 +161,7 @@ MidiLed ledFromMidiNote(int midiNote) {
     }
   }
 
-  return;
+  return {midiNote, LED_F};
 }
 
 void setup() {
